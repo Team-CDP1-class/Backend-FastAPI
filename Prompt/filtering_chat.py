@@ -2,17 +2,23 @@ import os
 from dotenv import load_dotenv
 from langchain.llms import AzureOpenAI
 from langchain.prompts import PromptTemplate
+from langchain.chains import LLMChain
+from langchain.chat_models import ChatOpenAI
+from langchain.prompts.chat import (
+    ChatPromptTemplate,
+    SystemMessagePromptTemplate,
+    HumanMessagePromptTemplate,
+)
 
 
-def Filtering(user_input):
+def Filtering_Chat(user_input):
     load_dotenv()
 
     os.environ["OPENAI_API_TYPE"] = os.getenv("OPENAI_API_TYPE")
     os.environ["OPENAI_API_VERSION"] = os.getenv("OPENAI_API_VERSION")
     os.environ["OPENAI_API_BASE"] = os.getenv("OPENAI_API_BASE")
     os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
-    llm = AzureOpenAI(deployment_name = "gpt35", max_tokens=3000)
-    prompt = PromptTemplate(
+    sys_prompt = PromptTemplate(
         input_variables=["premise", "setting","characters","outline"], 
         template="""
         당신은 작가이며, 아래 주어진 원칙을 잘 지켜 답변해야 합니다.
@@ -43,12 +49,30 @@ def Filtering(user_input):
         {outline}
         """
     )
+    
+     # )
+    system_message_prompt = SystemMessagePromptTemplate(prompt=sys_prompt)
 
-    prompt_formatted_str: str = prompt.format(
+    storyteller_prompt: PromptTemplate = PromptTemplate(
+        input_variables=["premise", "setting", "characters", "outline"], 
+        template="{premise}, {setting}, {characters}, {outline}을 가지고 판단해서 답변을 해줘!"
+    )
+    storyteller_message_prompt = HumanMessagePromptTemplate(prompt=storyteller_prompt)
+
+    chat_prompt = ChatPromptTemplate.from_messages(
+    [system_message_prompt, storyteller_message_prompt])
+
+    # create the chat model
+    chat_model: AzureOpenAI = AzureOpenAI(deployment_name = "gpt35", max_tokens=3000)
+
+    # Create the LLM chain
+    chain: LLMChain = LLMChain(llm=chat_model, prompt=chat_prompt)
+
+    prediction_msg: dict = chain.run(
         premise=user_input[0],
         setting=user_input[1],
         characters=user_input[2],
         outline=user_input[3]
     )
 
-    return llm.predict(prompt_formatted_str)
+    return prediction_msg
