@@ -17,10 +17,10 @@ for tries in range(5):
     split_answer = re.split(r"//|\||:|\n", answer)
     a = []
     for x in range(len(split_answer)):
-        if(split_answer[x].strip()!=""):
+        if(split_answer[x].strip()!="" and split_answer[x].strip()!="\\n"):
             a.append(split_answer[x].strip())
-    a.append("")
-    a.append("")
+    for x in range(2):
+        a.append("")
     print(a)
 
     stageTreatmentAnalysis = {}

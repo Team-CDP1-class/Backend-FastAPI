@@ -11,7 +11,7 @@ def Filtering2(user_input):
     os.environ["OPENAI_API_VERSION"] = os.getenv("OPENAI_API_VERSION")
     os.environ["OPENAI_API_BASE"] = os.getenv("OPENAI_API_BASE")
     os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
-    llm = AzureOpenAI(deployment_name = "gpt35", max_tokens=2000)
+    llm = AzureOpenAI(deployment_name = "gpt35", max_tokens=2500)
     prompt = PromptTemplate(
         input_variables=["treatment"], 
         template="""
