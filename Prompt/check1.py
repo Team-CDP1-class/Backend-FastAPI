@@ -29,7 +29,7 @@ def Check1(user_input):
         similarity = []
 
         for x in range(len(a)-8):
-            #print(x, a[x])
+            print(x, a[x])
             if(a[x]=="키워드"):
                 for i in range(0,10,2):
                     if(bool(re.match(alpha, a[x+4+i])) and bool(re.match(alpha, a[x+4+(i+1)])) ):
@@ -38,6 +38,7 @@ def Check1(user_input):
                         keywordsContent['reason'] = a[x+5+i]
                         keywords.append(keywordsContent)
                     else:
+                        print(000000)
                         isFlag = True
                         break 
             elif(a[x]=="문학작품"):
@@ -48,6 +49,7 @@ def Check1(user_input):
                         similarStoryContent['story'] = a[x+5+i]
                         similarStory.append(similarStoryContent)
                     else:
+                        print(111111)
                         isFlag = True
                         break
             elif(a[x]=="문학작품 이름"):
@@ -58,12 +60,19 @@ def Check1(user_input):
                         similarContent['reason'] = a[x+8+(i+3)]
                         similarity.append(similarContent)
                         if(len(similarity) == 5):
+                            t = 0
                             for j in range(len(similarStory)):
                                 if(a[x+8+i] in similarStory[j]['title']):
                                     similarStory[j]['similarity'] =  similarity
                                     similarity = []
+                                else:
+                                    t += 1
+                            if(t==5):
+                                print(222222)
+                                isFlag = True
+                                break
                     else:
-                        #print(x, i)
+                        print(333333)
                         isFlag = True
                         break
         if(isFlag == False and len(keywords) == 5 and len(similarStory) == 3 and len(similarStory[2]['similarity']) == 5):
