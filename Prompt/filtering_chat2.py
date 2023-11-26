@@ -22,8 +22,8 @@ def Filtering_Chat2(user_input):
         template="""
         당신은 작가이며, 아래 주어진 원칙을 잘 지켜 답변해야 한다.
 
-        0. 답변은 한글로 한다.
-
+        0. 답변은 한글로 하며, 답변 형식을 꼭 지킨다.
+        
         1. 입력글 스토리 트리트먼트(요약)를 단계로 나누어야 한다. 
         형식은 반드시 다음과 같은 1개의 Markdown table만으로 작성한다.
         | 단계 | 주요맥락 |
@@ -67,7 +67,7 @@ def Filtering_Chat2(user_input):
     [system_message_prompt, storyteller_message_prompt])
 
     # create the chat model
-    chat_model: AzureOpenAI = AzureOpenAI(deployment_name = "gpt35", max_tokens=2000)
+    chat_model: AzureOpenAI = AzureOpenAI(deployment_name = "gpt35", max_tokens=2300)
 
     # Create the LLM chain
     chain: LLMChain = LLMChain(llm=chat_model, prompt=chat_prompt)

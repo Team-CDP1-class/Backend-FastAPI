@@ -1,29 +1,49 @@
 from check1 import Check1
 from check2 import Check2
-import fastapi
+from fastapi import FastAPI
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 
-app = fastapi()
+app = FastAPI()
+
+class StorycardRes(BaseModel):
+    premise : str
+    setting : str
+    characters : str
+    outline : str
+
+class StoryTreatment(BaseModel):
+    contents : str
 
 @app.get("/")
-async def root(): 
-    return "hello world"
+async def root():
+    content = {"statusCode": 200, "data": "Hello World"}
+    print(content)
+    return JSONResponse(status_code=200, content=content, media_type="application/json")
 
-@app.post("/check1")
-async def qustion1(): 
-    return Check1(["소년과 소녀의 운명을 연결하는 우연한 만남과 갈등",
-        "한 시골 마을, 개울가와 산, 가을 계절",
-        """1. 소년 (내성적이고 소극적)
-           2. 소녀 (행동적이고 활발)
-           3. 소년의 부모 """,
-        """1. 소년과 소녀는 우연한 만남으로 개울가에서 처음 마주침.
-           2. 소녀는 소년에게 조약돌을 던져 관심을 표현하고, 소년은 그를 소중히 간직함.
-           3. 소년은 소녀와 함께 산에 놀러 가는 제안을 받아들임.
-           4. 두 사람은 산을 오르며 더 가까워짐.
-           5. 소나기를 만나 원두막에서 시간을 보내며 더 친밀해짐.
-        """])
+@app.post("/api/analysis/storycard")
+async def storycard_analysis(storycard : StorycardRes): 
+    result = Check1([storycard.premise, storycard.setting, storycard.characters, storycard.outline])
+    #result = {'keywords': [{'keyword': '어린 연인', 'reason': '두 주인공의 나이와 성격'}, {'keyword': '자연', 'reason': '전체적인 설정과 등장인물의 배경'}, {'keyword': '우연', 'reason': '두 주인공의 만남과 이로 인한 갈등'}, {'keyword': '사랑', 'reason': '두 주인공이 서로를 이해하면서 다가가는 과정'}, {'keyword': '가을', 'reason': '시간의 흐름과 배경 설정'}], 'similarStory': [{'title': '봄날은 간다 - 김동인', 'story': '주인공들의 은밀한 사랑', 'similarity': [{'percent': 50, 'reason': '두 주인공의 연령대와 감정의 변화'}, {'percent': 60, 'reason': '자연의 아름다움이 주는 애틋한 느낌'}, {'percent': 80, 'reason': '우연한 만남으로 시작되는 이야기'}, {'percent': 70, 'reason': '두 주인공의 서로에 대한 감정의 변화'}, {'percent': 40, 'reason': '계절감과 이야기의 배경으로 가을이 등장'}]}, {'title': '그리스인 조르바 - 니콜라이 보그다노프', 'story': '자연을 배경으로 한 인간의 감정 이야기', 'similarity': [{'percent': 20, 'reason': '작품의 주요 내용과는 거리가  있음'}, {'percent': 90, 'reason': '작품 전체가 자연을 배경으로 하며, 이를 지속적으로 강조함'}, {'percent': 40, 'reason': '우연한 만남은 없으나, 이를 대체하는 요소가 등장함'}, {'percent': 80, 'reason': '인간의 감정 변화를 주요 내용으로 다룸'}, {'percent': 50, 'reason': '계절감은 미미하게 등장함'}]}, {'title': '안나 카레니나 - 레프 톨스토이', 'story': '주인공 간의 첫 만남과 이를 통한 감정의 발전', 'similarity': [{'percent': 30, 'reason': '두 작품의 차이점이 큼'}, {'percent': 80, 'reason': '인간의 감정을 자연 속에서 다룸'}, {'percent': 70, 'reason': '우연한 만남이 이야기의 전개에 중요한 역할을 함'}, {'percent': 90, 'reason': '인간의 감정 변화를 주요 내용으로 다룸'}, {'percent': 90, 'reason': '이야기의 배 경이 가을로 설정되어 있음'}]}]}
+    print("ANALSYS RESULT")
+    print(result)
 
-@app.post("/check2")
-async def quesiton2():
-    return Check2(["""소년은 개울가에서 소녀를 보게 되지만, 말도 제대로 못 붙이는 내성적인 성격이다. 어느 날, 소녀가 그런 소년에게 조약돌을 던져 관심을 나타내고, 소년은 이를 소중히 간직한다. 그러나 소극적으로 소녀를 피하기만 하던 소년은 소녀의 제안으로 함께 산에 놀러 간다. 논밭을 지나 산마루까지 오르면서 아늑하고 평화로운 가을 날의 시골 정취 속에 둘 사이는 더욱 가까워진다. 
-                   산을 내려올 때 갑자기 소나기를 만난 소년과 소녀는 원두막과 수숫단 속에서 비를 피한다. 비가 그친 뒤, 돌아오는 길에 도랑물이 불어서 소년은 소녀를 업고 건너며, 둘 사이는 더욱 친밀해진다. 그 후 한동안 만나지 못﻿하다가 다시 소녀를 만난 소년은 소녀의 옷에 진 얼룩을 보고 부끄러워한다. 
-                   그리고 소녀는 그 동안 아팠으며, 곧 이사를 가게 되었다는 말을 듣게 된다. 소년은 마지막으로 한 번 소녀를 만나려고 애를 태우다가 소녀가 이사 가기로 한 전날 밤 잠결에 부모의 이야기를 통해 소녀가 죽었으며, 소년과의 추억이 깃든 옷을 그대로 입혀서 묻어 달라는 말을 남겼다는 사실을 알게 된다."""])
+    if result: 
+        req = {"statusCode":200, "data": result}
+        return JSONResponse(status_code=200, content=req, media_type="application/json")
+    else: 
+        req = {"statusCode":404, "data": None}
+        return JSONResponse(status_code=404, content=req, media_type="application/json")
+
+@app.post("/api/analysis/storytreatment")
+async def storytreatrment_analysis(storyTreatment : StoryTreatment):
+    result = Check2([storyTreatment.contents])
+    print("ANALSYS RESULT")
+    print(result)
+
+    if result: 
+        req = {"statusCode":200, "data": result}
+        return JSONResponse(status_code=200, content=req, media_type="application/json")
+    else: 
+        req = {"statusCode":404, "data": None}
+        return JSONResponse(status_code=404, content=req, media_type="application/json")
