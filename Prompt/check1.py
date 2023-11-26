@@ -10,6 +10,7 @@ def Check1(user_input):
         decimal = r"[0-9%]+"
         literal = r"[\"가-힣0-9a-zA-Z\s,.()'-]+"
         answer = Filtering1([user_input[0], user_input[1], user_input[2], user_input[3]])
+        print(answer)
         if("|" not in answer ):
             continue
         
