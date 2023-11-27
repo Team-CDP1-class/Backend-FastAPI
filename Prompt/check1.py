@@ -21,7 +21,7 @@ def Check1(user_input):
                 a.append(split_answer[x].strip())
         for x in range(8):
             a.append("")
-        #print(a)
+        print(a)
 
         storyCardAnalysis = {}
         keywords = []
@@ -76,10 +76,10 @@ def Check1(user_input):
                         isFlag = True
                         break
         if(isFlag == False and len(keywords) == 5 and len(similarStory) == 3 and len(similarStory[2]['similarity']) == 5):
-            #print(isFlag, len(keywords), len(similarStory), len(similarStory[0]['similarity']))
+            print(isFlag, len(keywords), len(similarStory), len(similarStory[0]['similarity']))
             storyCardAnalysis['keywords'] = keywords
             storyCardAnalysis['similarStory'] = similarStory
             break
-        #else:
-            #print(isFlag, len(keywords), len(similarStory))
+        else:
+            print(isFlag, len(keywords), len(similarStory))
     return storyCardAnalysis
